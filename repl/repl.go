@@ -29,7 +29,17 @@ func Start(in io.Reader, out io.Writer) {
 		p := parser.New(l)
 
 		prog := p.ParseProgram()
+		if len(p.Errors()) != 0 {
+			printParseError(out, p.Errors())
+			continue
+		}
+		io.WriteString(out, prog.String())
+		io.WriteString(out, "\n")
+	}
+}
 
-		fmt.Println(len(prog.Statements))
+func printParseError(out io.Writer, errors []string) {
+	for _, msg := range errors {
+		io.WriteString(out, "\t"+msg+"\n")
 	}
 }
